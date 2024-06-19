@@ -1,0 +1,43 @@
+config:
+  cloud-init.user-data: |
+    #cloud-config
+    package-update: true
+    package-upgrade: true
+    package_reboot_if_required: true
+    packages:
+      - openssh-server
+      - git
+      - curl
+      - wget
+      - zsh
+      - vim
+    users:
+      - name: devuser
+        gecos: Dev User
+        groups: users,admin,wheel
+        sudo: AALL=(ALL) NOPASSWD:ALL
+        shell: /usr/bin/zsh
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOghYkhkZ8co9T6dEiJQgvTiw5UcYPF1zmH0Sxhr+z8F dtoebe@AllNixedUp-01"
+    runcmd:
+      - [su, devuser, -c, 'wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true']
+      - [su, devuser, -c, "sed -i 's/robbyrussell/avit/g' /home/devuser/.zshrc"]
+      - [su, devuser, -c, "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"]
+      - [su, devuser, -c, "source /home/devuser/.nvm/nvm.sh && nvm install --lts"]
+      - [su, devuser, -c, "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"]
+      - [su, devuser, -c, 'mkdir -p /home/devuser/.local/bin && echo -e "export PATH=/home/devuser/.local/bin:$PATH" >> /home/devuser/.zshrc']
+      - [su, devuser, -c, "cd /home/devuser && wget -q https://go.dev/dl/go1.22.4.linux-amd64.tar.gz && tar -zxf go1.22.4.linux-amd64.tar.gz -C /home/devuser/.local --transform 's/go/go1.22.4/'"]
+      - [su, devuser, -c, "ln -sf /home/devuser/.local/go1.22.4 /home/devuser/.local/go"]
+      - [su, devuser, -c, "echo -e 'export GOROOT=/home/devuser/.local/go\nexport PATH=$GOROOT/bin:$PATH\nexport GOPATH=/home/devuser/go\nexport GOBIN=$GOPATH/bin\nexport PATH=$GOBIN:$PATH\n' >> /home/devuser/.zshrc"]
+description: ""
+devices:
+  eth0:
+    name: eth0
+    network: incusbr0
+    type: nic
+  root:
+    path: /
+    pool: default
+    type: disk
+name: cloud-dev
+used_by: []
