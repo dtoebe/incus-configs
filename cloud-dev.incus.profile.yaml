@@ -38,7 +38,7 @@ config:
       - [su, devuser, -c, 'mkdir -p /home/devuser/.local/bin &&echo -e "export PATH=/home/devuser/.local/bin:$PATH" >> /home/devuser/.zshrc']
       - [su, devuser, -c, "cd /home/devuser && wget -q https://go.dev/dl/go1.22.4.linux-amd64.tar.gz && tar -zxf go1.22.4.linux-amd64.tar.gz -C /home/devuser/.local --transform 's/go/go1.22.4/'"]
       - [su, devuser, -c, "ln -sf /home/devuser/.local/go1.22.4 /home/devuser/.local/go"]
-      - [su, devuser, -c, "echo -e 'export GOROOT=/home/devuser/.local/go\nexportPATH=$GOROOT/bin:$PATH\nexport GOPATH=/home/devuser/go\nexport GOBIN=$GOPATH/bin\nexportPATH=$GOBIN:$PATH\n' >> /home/devuser/.zshrc"]
+      - [su, devuser, -c, "echo -e 'export GOROOT=/home/devuser/.local/go\nexport PATH=$GOROOT/bin:$PATH\nexport GOPATH=/home/devuser/go\nexport GOBIN=$GOPATH/bin\nexport PATH=$GOBIN:$PATH\n' >> /home/devuser/.zshrc"]
   security.nesting: "true"
   security.privileged: "true"
 description: ""
@@ -53,4 +53,4 @@ devices:
     type: disk
 name: cloud-dev
 used_by:
-- /1.0/instances/GPSI
+- /1.0/instances/XirgoHMI
