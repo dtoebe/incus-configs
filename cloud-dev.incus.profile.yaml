@@ -14,8 +14,9 @@ config:
     users:
       - name: devuser
         gecos: Dev User
+        lock_passwd: false
         groups: users,admin,wheel
-        sudo: AALL=(ALL) NOPASSWD:ALL
+        sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /usr/bin/zsh
         ssh_authorized_keys:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOghYkhkZ8co9T6dEiJQgvTiw5UcYPF1zmH0Sxhr+z8F dtoebe@AllNixedUp-01"
