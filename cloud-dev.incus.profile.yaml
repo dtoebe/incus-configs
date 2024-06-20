@@ -11,25 +11,35 @@ config:
       - wget
       - zsh
       - vim
+      - ca-certificates
+      - gnupg
+      - lsb-release
     users:
       - name: devuser
         gecos: Dev User
-        lock_passwd: false
-        groups: users,admin,wheel
+        groups: users,admin,wheel,docker
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /usr/bin/zsh
         ssh_authorized_keys:
-          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOghYkhkZ8co9T6dEiJQgvTiw5UcYPF1zmH0Sxhr+z8F dtoebe@AllNixedUp-01"
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOghYkhkZ8co9T6dEiJQgvTiw5UcYPF1zmH0Sxhr+z8F dtoebe@AllNixedUp-01
     runcmd:
-      - [su, devuser, -c, 'wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true']
+      - "install -m 0755 -d /etc/apt/keyrings"
+      - "curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc"
+      - "chmod a+r /etc/apt/keyrings/docker.asc"
+      - 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null'
+      - [apt-get, update]
+      - [apt-get, install, -y, docker-ce, docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin]
+      - [su, devuser, -c, 'wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O- | zsh || true']
       - [su, devuser, -c, "sed -i 's/robbyrussell/avit/g' /home/devuser/.zshrc"]
       - [su, devuser, -c, "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"]
       - [su, devuser, -c, "source /home/devuser/.nvm/nvm.sh && nvm install --lts"]
       - [su, devuser, -c, "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"]
-      - [su, devuser, -c, 'mkdir -p /home/devuser/.local/bin && echo -e "export PATH=/home/devuser/.local/bin:$PATH" >> /home/devuser/.zshrc']
+      - [su, devuser, -c, 'mkdir -p /home/devuser/.local/bin &&echo -e "export PATH=/home/devuser/.local/bin:$PATH" >> /home/devuser/.zshrc']
       - [su, devuser, -c, "cd /home/devuser && wget -q https://go.dev/dl/go1.22.4.linux-amd64.tar.gz && tar -zxf go1.22.4.linux-amd64.tar.gz -C /home/devuser/.local --transform 's/go/go1.22.4/'"]
       - [su, devuser, -c, "ln -sf /home/devuser/.local/go1.22.4 /home/devuser/.local/go"]
-      - [su, devuser, -c, "echo -e 'export GOROOT=/home/devuser/.local/go\nexport PATH=$GOROOT/bin:$PATH\nexport GOPATH=/home/devuser/go\nexport GOBIN=$GOPATH/bin\nexport PATH=$GOBIN:$PATH\n' >> /home/devuser/.zshrc"]
+      - [su, devuser, -c, "echo -e 'export GOROOT=/home/devuser/.local/go\nexportPATH=$GOROOT/bin:$PATH\nexport GOPATH=/home/devuser/go\nexport GOBIN=$GOPATH/bin\nexportPATH=$GOBIN:$PATH\n' >> /home/devuser/.zshrc"]
+  security.nesting: "true"
+  security.privileged: "true"
 description: ""
 devices:
   eth0:
@@ -41,4 +51,6 @@ devices:
     pool: default
     type: disk
 name: cloud-dev
-used_by: []
+used_by:
+- /1.0/instances/Dev-01
+- /1.0/instances/GPSI
