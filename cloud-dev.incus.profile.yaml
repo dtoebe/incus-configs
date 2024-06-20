@@ -22,6 +22,7 @@ config:
         shell: /usr/bin/zsh
         ssh_authorized_keys:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOghYkhkZ8co9T6dEiJQgvTiw5UcYPF1zmH0Sxhr+z8F dtoebe@AllNixedUp-01
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII/Gom0i9kENlaWTNl4a+bl3uiwkBCasscciRcW6bHnp dtoebe@AllNixedUp-03
     runcmd:
       - "install -m 0755 -d /etc/apt/keyrings"
       - "curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc"
@@ -51,6 +52,4 @@ devices:
     pool: default
     type: disk
 name: cloud-dev
-used_by:
-- /1.0/instances/Dev-01
-- /1.0/instances/GPSI
+used_by: []
