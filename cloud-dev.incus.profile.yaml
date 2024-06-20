@@ -52,4 +52,5 @@ devices:
     pool: default
     type: disk
 name: cloud-dev
-used_by: []
+used_by:
+- /1.0/instances/GPSI
